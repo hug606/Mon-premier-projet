@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RS216 Relevé">
 <meta name="theme-color" content="#f97316">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
 <title>Relevé Terrain — Répar'stores RS216</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -3461,6 +3465,67 @@ function closeOutlookModal() {
   }
 })();
 
+/* ══ PWA — Service Worker + Bannière d'installation ══ */
+(function initPWA() {
+
+  /* Enregistrer le Service Worker */
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(err => console.warn('SW non enregistré :', err));
+  }
+
+  /* Bannière d'installation Android */
+  let deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const banner = document.getElementById('pwa-banner');
+    if (banner) banner.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    const banner = document.getElementById('pwa-banner');
+    if (banner) banner.style.display = 'none';
+    showToast('✅ App installée sur l\'écran d\'accueil !', '#16a34a');
+    deferredPrompt = null;
+  });
+
+  document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('pwa-banner').style.display = 'none';
+  });
+
+  document.getElementById('pwa-close-btn')?.addEventListener('click', () => {
+    document.getElementById('pwa-banner').style.display = 'none';
+    sessionStorage.setItem('pwa-banner-dismissed', '1');
+  });
+
+  /* Ne pas réafficher si déjà refusé dans la session */
+  if (sessionStorage.getItem('pwa-banner-dismissed')) {
+    const banner = document.getElementById('pwa-banner');
+    if (banner) banner.dataset.blocked = '1';
+  }
+
+})();
+
 </script>
+
+<!-- Bannière d'installation PWA -->
+<div id="pwa-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:99996;background:#1a1a18;color:#fff;padding:12px 14px 20px;align-items:center;gap:11px;box-shadow:0 -4px 24px rgba(0,0,0,.35)">
+  <div style="width:46px;height:46px;background:#f97316;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">🪟</div>
+  <div style="flex:1;min-width:0">
+    <div style="font-weight:800;font-size:14px;letter-spacing:-.2px">Installer l'application</div>
+    <div style="font-size:11px;color:#9ca3af;margin-top:1px">Accès rapide · Fonctionne hors-ligne</div>
+  </div>
+  <button id="pwa-install-btn" style="background:#f97316;color:#fff;border:none;border-radius:10px;padding:10px 15px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0">
+    Installer
+  </button>
+  <button id="pwa-close-btn" style="background:none;border:none;color:#6b7280;font-size:22px;cursor:pointer;padding:0 2px;flex-shrink:0;line-height:1">✕</button>
+</div>
+
 </body>
 </html>
