@@ -3096,15 +3096,27 @@ function showIcalSetup() {
 
   events.innerHTML = `
     <div style="background:#f0f7ff;border-radius:12px;padding:14px;font-size:13px;color:#1a1a18;line-height:1.7">
-      <div style="font-weight:800;font-size:15px;margin-bottom:10px">📅 Connecter Google Agenda</div>
-      <div style="font-weight:700;color:#1a73e8;margin-bottom:6px">Obtenir le lien iCal (30 sec) :</div>
-      <div style="margin-bottom:4px">1️⃣ Ouvre <strong>Google Agenda</strong> sur ton téléphone</div>
-      <div style="margin-bottom:4px">2️⃣ Appuie sur ⚙️ <strong>Paramètres</strong></div>
-      <div style="margin-bottom:4px">3️⃣ Clique sur <strong>ton calendrier</strong></div>
-      <div style="margin-bottom:4px">4️⃣ Descends jusqu'à <strong>"Adresse secrète au format iCal"</strong></div>
-      <div style="margin-bottom:12px">5️⃣ <strong>Copie le lien</strong> et colle-le ici ↓</div>
+      <div style="font-weight:800;font-size:15px;margin-bottom:10px">📅 Connecter ton calendrier</div>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="flex:1;background:#fff;border:2px solid #1a73e8;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700;color:#1a73e8">
+          <div style="font-size:18px;margin-bottom:3px">🔵</div>Google Agenda
+        </div>
+        <div style="flex:1;background:#fff;border:2px solid #0078d4;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700;color:#0078d4">
+          <div style="font-size:18px;margin-bottom:3px">📧</div>Outlook
+        </div>
+      </div>
+
+      <div style="background:#f8fafc;border-radius:8px;padding:10px;font-size:12px;margin-bottom:10px;line-height:1.7">
+        <div style="font-weight:700;margin-bottom:4px">🔵 Google Agenda :</div>
+        <div>Paramètres → ton calendrier → <strong>"Adresse secrète au format iCal"</strong></div>
+        <div style="margin-top:6px;font-weight:700">📧 Outlook :</div>
+        <div>outlook.com → ⚙️ → <strong>Paramètres complets → Calendrier → Calendriers partagés → Publier → lien ICS</strong></div>
+      </div>
+
+      <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:#6b7280">Colle ton lien ici ↓</div>
       <input id="ical-url-input" type="url"
-             placeholder="https://calendar.google.com/calendar/ical/…"
+             placeholder="https://outlook.office365.com/… ou calendar.google.com/…"
              style="width:100%;border:2px solid #1a73e8;border-radius:10px;padding:10px;font-size:12px;box-sizing:border-box;margin-bottom:10px;font-family:monospace">
       <button onclick="saveIcalUrl()"
               style="width:100%;background:#1a73e8;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:800;cursor:pointer">
@@ -3122,9 +3134,10 @@ function showIcalSetup() {
 function saveIcalUrl() {
   const input = document.getElementById('ical-url-input');
   const url   = (input?.value || '').trim();
-  if (!url || !url.includes('calendar.google.com')) {
+  const valid = ['calendar.google.com', 'outlook.office365.com', 'outlook.live.com', 'outlook.office.com'];
+  if (!url || !valid.some(d => url.includes(d))) {
     input.style.borderColor = '#dc2626';
-    input.placeholder = "⚠️ Colle l'adresse iCal Google Agenda ici";
+    input.placeholder = "⚠️ Colle une adresse iCal Google ou Outlook ici";
     return;
   }
   localStorage.setItem(ICAL_LS_KEY, url);
