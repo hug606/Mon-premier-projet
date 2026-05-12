@@ -1,0 +1,37 @@
+{
+  "name": "Relevé Terrain — Répar'stores RS216",
+  "short_name": "RS216 Relevé",
+  "description": "Application de relevé terrain pour volets roulants, portes de garage et stores",
+  "start_url": "./relevevoletv42.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f4f0",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nouveau relevé",
+      "short_name": "Nouveau",
+      "description": "Commencer un nouveau relevé terrain",
+      "url": "./relevevoletv42.html",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    }
+  ],
+  "categories": ["business", "utilities"],
+  "prefer_related_applications": false
+}
